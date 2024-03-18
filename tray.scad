@@ -100,6 +100,8 @@ module tray(dimensions, n_columns=1, n_rows=1, columns=false, rows=false, thickn
 	    	// Draw main box.
 	    	tray_outside(dimensions, thickness=thickness, curved=curved, top_bevel_radius=top_bevel_radius, bottom_thickness=bottom_thickness);
 
+			lid(dimensions, r=10, x=dimensions[0], y=(dimensions[1]), z=5, xcorners=true, ycorners=true, zcorners=true, $fn=50);
+
 		// Create list of columns.
 	    	column_width = [
 			for (i = [0 : n_columns-1]) 
@@ -318,3 +320,71 @@ module _tray_meniscus(h, r, fn=128)
 }
 
 module _tray_rotate_around(a, v) { translate(v) { rotate(a) { translate(-v) { children(); } } } }
+
+module lid(dim, r, x, y, z, xcorners, ycorners, zcorners, $fn) {
+	translate([0, 0, dim[2]+20]) {
+		_tray_rounded_cube([dim[0], dim[1], r], r, x, y, z, xcorners, ycorners, zcorners, $fn);
+	}
+}
+
+module magnet_pocket(r, h) {
+	cylinder(h=h, r=r);
+}
+
+// module tray_with_pockets(dim, r, x, y, z, xcorners, ycorners, zcorners, $fn, magnet_r, magnet_h) {
+// 	difference() {
+// 		_tray_rounded_cube(dim, r, x, y, z, xcorners, ycorners, zcorners, $fn);
+// 		translate([magnet_r, magnet_r, -magnet_h]) {
+// 			magnet_pocket(magnet_r, magnet_h);
+// 		}
+// 		translate([dim[0]-magnet_r, magnet_r, -magnet_h]) {
+// 			magnet_pocket(magnet_r, magnet_h);
+// 		}
+// 		translate([magnet_r, dim[1]-magnet_r, -magnet_h]) {
+// 			magnet_pocket(magnet_r, magnet_h);
+// 		}
+// 		translate([dim[0]-magnet_r, dim[1]-magnet_r, -magnet_h]) {
+// 			magnet_pocket(magnet_r, magnet_h);
+// 		}
+// 	}
+// }
+
+// module lid_with_pockets(dim, r, x, y, z, xcorners, ycorners, zcorners, $fn, magnet_r, magnet_h) {
+// 	translate([0, 0, dim[2]+20]) {
+// 		difference() {
+// 			_tray_rounded_cube([dim[0], dim[1], r], r, x, y, z, xcorners, ycorners, zcorners, $fn);
+// 			translate([magnet_r, magnet_r, dim[2]+20-magnet_h]) {
+// 				magnet_pocket(magnet_r, magnet_h);
+// 			}
+// 			translate([dim[0]-magnet_r, magnet_r, dim[2]+20-magnet_h]) {
+// 				magnet_pocket(magnet_r, magnet_h);
+// 			}
+// 			translate([magnet_r, dim[1]-magnet_r, dim[2]+20-magnet_h]) {
+// 				magnet_pocket(magnet_r, magnet_h);
+// 			}
+// 			translate([dim[0]-magnet_r, dim[1]-magnet_r, dim[2]+20-magnet_h]) {
+// 				magnet_pocket(magnet_r, magnet_h);
+// 			}
+// 		}
+// 	}
+// }
+
+// module lid_outside(dimensions, thickness=2, curved=true, top_bevel_radius=0, bottom_thickness=2, magnet_r=5, magnet_h=5) {
+//     translate([0, 0, dimensions[2]+20]) {
+//         difference() {
+//             _tray_rounded_cube([dimensions[0], dimensions[1], thickness], thickness, curved, top_bevel_radius, bottom_thickness);
+//             translate([magnet_r, magnet_r, dimensions[2]+20-magnet_h]) {
+//                 magnet_pocket(magnet_r, magnet_h);
+//             }
+//             translate([dimensions[0]-magnet_r, magnet_r, dimensions[2]+20-magnet_h]) {
+//                 magnet_pocket(magnet_r, magnet_h);
+//             }
+//             translate([magnet_r, dimensions[1]-magnet_r, dimensions[2]+20-magnet_h]) {
+//                 magnet_pocket(magnet_r, magnet_h);
+//             }
+//             translate([dimensions[0]-magnet_r, dimensions[1]-magnet_r, dimensions[2]+20-magnet_h]) {
+//                 magnet_pocket(magnet_r, magnet_h);
+//             }
+//         }
+//     }
+// }
