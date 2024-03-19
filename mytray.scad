@@ -12,4 +12,4 @@ include <tray.scad>
 // }
 
 
-tray([200, 150, 30],magnets=true,magnet_height=4,magnet_radius=2,lid=true);//,n_columns=3,n_rows=[4,3,3],columns=[0.25,0.75]);
+tray([width, depth, height],magnets=true,magnet_height=5,magnet_radius=6,n_columns=3,n_rows=[4,3,3],columns=[0.25,0.75]);

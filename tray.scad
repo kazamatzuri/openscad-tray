@@ -58,7 +58,7 @@
 module tray(dimensions, n_columns = 1, n_rows = 1, columns = false, rows = false, thickness = 2, curved = true,
             bottom_thickness = undef, dividers_height = undef, dividers_thickness = undef, bottom_bevel_radius = undef,
             top_bevel_radius = undef, dividers_bottom_bevel_radius = undef, dividers_top_bevel_radius = undef,
-            rows_first = false, magnets = false, magnet_height = undef, magnet_radius = undef, lid = false)
+            rows_first = false, magnets = false, magnet_height = undef, magnet_radius = undef)
 {
 
     box_height = dimensions[2];
@@ -66,6 +66,7 @@ module tray(dimensions, n_columns = 1, n_rows = 1, columns = false, rows = false
     // If using magnets, create a magnet box.
     if (magnets == true)
     {
+        union(){
         difference()
         {
             tray_module(dimensions = dimensions, n_columns = n_columns, n_rows = n_rows, columns = columns, rows = rows,
@@ -114,6 +115,7 @@ module tray(dimensions, n_columns = 1, n_rows = 1, columns = false, rows = false
         {
             magnet_box(dimensions[2], magnet_radius, magnet_height);
         }
+        }
     }
     else
     {
@@ -125,64 +127,6 @@ module tray(dimensions, n_columns = 1, n_rows = 1, columns = false, rows = false
                     rows_first = rows_first);
     }
 
-    if (lid == true)
-    {
-        lid_offset = box_height + 20;
-        lid_height = 6;
-        if (magnets == true)
-        {
-            difference()
-            {
-                translate([ 0, 0, lid_offset ])
-                    lid(dimensions, r = 10, x = dimensions[0], y = (dimensions[1]), z = lid_height, xcorners = true,
-                        ycorners = true, zcorners = true, $fn = 50);
-                translate([ magnet_shift, magnet_shift, lid_offset ])
-                {
-                    cube([ 2 * magnet_radius + 4, 2 * magnet_radius + 4, lid_height ]);
-                }
-                translate([ dimensions[0] - magnet_shift - (2 * magnet_radius + 4), magnet_shift, lid_offset ])
-                {
-                    cube([ 2 * magnet_radius + 4, 2 * magnet_radius + 4, lid_height ]);
-                }
-                translate([ magnet_shift, dimensions[1] - magnet_shift - (2 * magnet_radius + 4), lid_offset ])
-                {
-                    cube([ 2 * magnet_radius + 4, 2 * magnet_radius + 4, lid_height ]);
-                }
-                translate([
-                    dimensions[0] - magnet_shift - (2 * magnet_radius + 4),
-                    dimensions[1] - magnet_shift - (2 * magnet_radius + 4),
-                    lid_offset
-                ])
-                {
-                    cube([ 2 * magnet_radius + 4, 2 * magnet_radius + 4, lid_height ]);
-                }
-            }
-            translate([ magnet_shift, magnet_shift, lid_offset ])
-            {
-                magnet_box(lid_height, magnet_radius, magnet_height);
-            }
-            translate([ dimensions[0] - magnet_shift - (2 * magnet_radius + 4), magnet_shift, lid_offset ])
-            {
-                magnet_box(lid_height, magnet_radius, magnet_height);
-            }
-            translate([ magnet_shift, dimensions[1] - magnet_shift - (2 * magnet_radius + 4), lid_offset ])
-            {
-                magnet_box(lid_height, magnet_radius, magnet_height);
-            }
-            translate([
-                dimensions[0] - magnet_shift - (2 * magnet_radius + 4),
-                dimensions[1] - magnet_shift - (2 * magnet_radius + 4), lid_offset
-            ])
-            {
-                magnet_box(lid_height, magnet_radius, magnet_height);
-            }
-        }
-        else
-        {
-            translate([ 0, 0, box_height + 20 ]) lid(dimensions, r = 10, x = dimensions[0], y = (dimensions[1]), z = 5,
-                                                     xcorners = true, ycorners = true, zcorners = true, $fn = 50);
-        }
-    }
 }
 
 module tray_module(dimensions, n_columns, n_rows, columns, rows, thickness, curved, dividers_height, dividers_thickness,
@@ -576,13 +520,6 @@ module _tray_rotate_around(a, v)
     }
 }
 
-module lid(dim, r, x, y, z, xcorners, ycorners, zcorners, $fn)
-{
-    translate([ 0, 0, 0 ])
-    {
-        _tray_rounded_cube([ dim[0], dim[1], r ], r, x, y, z, xcorners, ycorners, zcorners, $fn);
-    }
-}
 
 module magnet_box(box_height, magnet_radius, magnet_height)
 {
@@ -590,11 +527,10 @@ module magnet_box(box_height, magnet_radius, magnet_height)
     {
         // Create the box
         cube([ 2 * magnet_radius + 4, 2 * magnet_radius + 4, box_height ]);
-
         // Carve out the cylinder for the magnet
-        translate([ magnet_radius + 2, magnet_radius + 2, box_height - magnet_height - 2 ])
+        translate([ magnet_radius + 2, magnet_radius + 2, box_height - magnet_height  ])
         {
-            cylinder(h = magnet_height, r = magnet_radius, center = true, $fn = 60);
+            cylinder(h = magnet_height, r = magnet_radius, center = true, $fn = 24);
         }
     }
 }
